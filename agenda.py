@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 
 TODO_FILE = 'todo.txt'
@@ -40,15 +41,28 @@ def printCores(texto, cor) :
 # Qualquer elemento da tupla que contenha um string vazio ('') não
 # deve ser levado em consideração. 
 def adicionar(descricao, extras):
-
+  data = '' 
+  hora = ''
+  pri = ''
+  desc = ''
+  contexto = ''
+  projeto = ''
   # não é possível adicionar uma atividade que não possui descrição. 
   if descricao  == '' :
     return False
-  
-
-  ################ COMPLETAR
-
-
+  else:
+    if dataValida(extras[0]):
+      data = extras[0]
+    if horaValida(extras[1]):
+      hora = extras[1]
+    if  prioridadeValida(extras[2]):
+      pri = extras[2]
+    if contextoValido(extras[3]):
+      contexto = extras[3]
+    if projetoValido(extras[4]):
+      projeto = extras[4]
+    novaAtividade = [data, hora, pri, descricao,contexto, projeto]
+    novaAtividade = ' '.join(novaAtividade)
   # Escreve no TODO_FILE. 
   try: 
     fp = open(TODO_FILE, 'a')
@@ -65,7 +79,10 @@ def adicionar(descricao, extras):
 # Valida a prioridade.
 def prioridadeValida(pri):
 
-  ################ COMPLETAR
+  if len(pri) >= 2 and pri[0] == '(' and pri[2] == ')' and ehLetra(pri[1]):
+        return True
+  else:
+        return False
   
   return False
 
@@ -76,29 +93,59 @@ def horaValida(horaMin) :
   if len(horaMin) != 4 or not soDigitos(horaMin):
     return False
   else:
-    ################ COMPLETAR
-    return True
+    if int(horaMin[0] + horaMin[1]) >= 0 and int(horaMin[0] + horaMin[1]) <= 23:
+      if int(horaMin[0] + horaMin[1]) >= 0 and int(horaMin[2] + horaMin[3]) < 60:
+        return True
+      else:
+        return False
+    else:
+      return False
 
 # Valida datas. Verificar inclusive se não estamos tentando
 # colocar 31 dias em fevereiro. Não precisamos nos certificar, porém,
 # de que um ano é bissexto. 
 def dataValida(data) :
-
-  ################ COMPLETAR
-
+  if len(data)!= 8 or not soDigitos(data):
+        return False
+  else:
+        mes = int(data[2] + data[3])
+        ano = int(data[4] + data[5] + data[6] + data[7])
+        dia = int(data[0] + data[1])
+        if mes <= 12 and  mes >= 1:
+              if len(str(ano)) == 4:
+                    if mes == 2 and dia  > 29:
+                          return  False
+                    elif mes == 4 or mes == 6 or mes == 8 or mes == 9 or mes == 11:
+                          if dia > 30:
+                                return False
+                          else:
+                                return True
+                    else:
+                          if dia > 0 and dia < 32:
+                                return True
+              else:
+                    return False
+        else:
+              return False
   return False
 
 # Valida que o string do projeto está no formato correto. 
 def projetoValido(proj):
-
-  ################ COMPLETAR
+  if len(proj) >= 2 and proj[0] == '+':
+        return True
+  else:
+        return False
+        
 
   return False
 
 # Valida que o string do contexto está no formato correto. 
 def contextoValido(cont):
 
-  ################ COMPLETAR
+  if len(cont) >= 2 and cont[0] == '@':
+        return True
+  else:
+        return False
 
   return False
 
@@ -149,12 +196,29 @@ def organizar(linhas):
     # para saber se são contexto e/ou projeto. Quando isso terminar, o que sobrar
     # corresponde à descrição. É só transformar a lista de tokens em um string e
     # construir a tupla com as informações disponíveis. 
-
-    ################ COMPLETAR
-
+    for y in tokens:
+      inicial = tokens[0]
+      finais  = tokens[-1]
+      if dataValida(inicial):
+        data = inicial
+        tokens.pop(0)
+      elif horaValida(inicial):
+        hora = inicial
+        tokens.pop(0)
+      elif prioridadeValida(inicial):
+        pri = inicial
+        tokens.pop(0)
+      elif contextoValido(finais):
+        contexto = finais
+        tokens.pop()
+      elif projetoValido(finais):
+        projeto = finais
+        tokens.pop()
+      desc = ' '.join(tokens)
     itens.append((desc, (data, hora, pri, contexto, projeto)))
 
   return itens
+
 
 
 # Datas e horas são armazenadas nos formatos DDMMAAAA e HHMM, mas são exibidas
@@ -209,7 +273,8 @@ def priorizar(num, prioridade):
 # isso significa que a função adicionar() deve ser invocada para registrar a nova atividade.
 # O bloco principal fica responsável também por tirar espaços em branco no início e fim dos strings
 # usando o método strip(). Além disso, realiza a validação de horas, datas, prioridades, contextos e
-# projetos. 
+# projetos.  
+"""
 def processarComandos(comandos) :
   if comandos[1] == ADICIONAR:
     comandos.pop(0) # remove 'agenda.py'
@@ -238,6 +303,12 @@ def processarComandos(comandos) :
 
   else :
     print("Comando inválido.")
+ """ 
+def ehLetra(strr):
+    strr = strr.upper()
+    if strr < 'A' or strr > 'Z':
+        return False
+    return True
     
   
 # sys.argv é uma lista de strings onde o primeiro elemento é o nome do programa
@@ -249,4 +320,4 @@ def processarComandos(comandos) :
 # sys.argv terá como conteúdo
 #
 # ['agenda.py', 'a', 'Mudar', 'de', 'nome']
-processarComandos(sys.argv)
+#processarComandos(sys.argv)
