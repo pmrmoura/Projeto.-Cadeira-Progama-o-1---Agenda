@@ -229,21 +229,34 @@ def organizar(linhas):
 # determinado projeto; (vi) atividades de determinado dia (data específica, hoje ou amanhã). Isso não
 # é uma das tarefas básicas do projeto, porém. 
 def listar():
+  lista = []
+  tupla = ()
+  fp = open(TODO_FILE, 'r')
+  for x in fp:
+    lista.append(x)
+  tupla = organizar(lista)
 
-  ################ COMPLETAR
-  return 
-
-def ordenarPorDataHora(itens):
-
-  ################ COMPLETAR
-
-  return itens
+def ordenarPorDataHora(lista):
+  
+  lista = organizar(lista)
+  for x in range(len(lista) - 1):
+    data = lista[x][1][0]
+    data2 = lista[x + 1][1][0]
+    mes = int(data[2] + data[3])
+    ano = int(data[4] + data[5] + data[6] + data[7])
+    dia = int(data[0] + data[1])
+    mes2 = int(data2[2] + data2[3])
+    ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
+    dia2 = int(data2[0] + data2[1])
+    if ano1 > data2
+  return lista
    
-def ordenarPorPrioridade(itens):
-
-  ################ COMPLETAR
-
-  return itens
+def ordenarPorPrioridade(lista):
+  lista = organizar(lista)
+  for x in range(len(lista) - 1):
+    if lista[x][1][2][1] > lista[x + 1][1][2][1] and x + 1 != len(lista):
+      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+  return lista
 
 def fazer(num):
 
@@ -274,7 +287,7 @@ def priorizar(num, prioridade):
 # O bloco principal fica responsável também por tirar espaços em branco no início e fim dos strings
 # usando o método strip(). Além disso, realiza a validação de horas, datas, prioridades, contextos e
 # projetos.  
-"""
+
 def processarComandos(comandos) :
   if comandos[1] == ADICIONAR:
     comandos.pop(0) # remove 'agenda.py'
@@ -283,7 +296,7 @@ def processarComandos(comandos) :
     # itemParaAdicionar = (descricao, (prioridade, data, hora, contexto, projeto))
     adicionar(itemParaAdicionar[0], itemParaAdicionar[1]) # novos itens não têm prioridade
   elif comandos[1] == LISTAR:
-    return    
+    listar()    
     ################ COMPLETAR
 
   elif comandos[1] == REMOVER:
@@ -303,12 +316,14 @@ def processarComandos(comandos) :
 
   else :
     print("Comando inválido.")
- """ 
+
 def ehLetra(strr):
     strr = strr.upper()
     if strr < 'A' or strr > 'Z':
         return False
     return True
+  
+
     
   
 # sys.argv é uma lista de strings onde o primeiro elemento é o nome do programa
@@ -320,4 +335,4 @@ def ehLetra(strr):
 # sys.argv terá como conteúdo
 #
 # ['agenda.py', 'a', 'Mudar', 'de', 'nome']
-#processarComandos(sys.argv)
+processarComandos(sys.argv)
