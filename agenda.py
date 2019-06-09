@@ -24,7 +24,7 @@ LISTAR = 'l'
 # printCores('Oi mundo!', RED)
 # printCores('Texto amarelo e negrito', YELLOW + BOLD)
 
-def printCores(texto, cor) :
+def printCores(*texto, cor) :
   print(cor + texto + RESET)
   
 
@@ -234,11 +234,25 @@ def listar():
   fp = open(TODO_FILE, 'r')
   for x in fp:
     lista.append(x)
-  tupla = organizar(lista)
+  fp.close()
+  lista = organizar(lista)
+  lista = ordenarPorPrioridade(lista)
+  for x in range(len(lista)):
+    data = lista[x][1][0]
+    hora = lista[x][1][1]
+    if dataValida(lista[x][1][0]):
+      data = data[0] + data[1] + "/" + data[2] + data[3] + "/" + data[4] + data[5] + data[6] + data[7]
+    if horaValida(lista[x][1][1]):
+      hora = hora[0] + hora[1] + "h" + hora[2] + hora[3] + "m"
+    palavraLista = [str(x), data ,  hora ,lista[x][1][2] ,lista[x][0] ,lista[x][1][3] , lista[x][1][4]]
+    palavra = ' '.join(palavraLista)
+    if lista[x][1][2] == "(A)":
+      print(YELLOW + BOLD, palavra, RESET)
+    else:
+      print(GREEN, palavra , RESET)
+    
 
 def ordenarPorDataHora(lista):
-  
-  lista = organizar(lista)
   for x in range(len(lista) - 1):
     data = lista[x][1][0]
     data2 = lista[x + 1][1][0]
@@ -248,15 +262,35 @@ def ordenarPorDataHora(lista):
     mes2 = int(data2[2] + data2[3])
     ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
     dia2 = int(data2[0] + data2[1])
-    if ano1 > data2
+    if ano > ano2 or ano2 > ano:
+      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+    elif mes > mes2 or mes2 > mes:
+      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+    elif dia > dia2 or dia2 > dia:
+      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+      
   return lista
    
 def ordenarPorPrioridade(lista):
-  lista = organizar(lista)
-  for x in range(len(lista) - 1):
-    if lista[x][1][2][1] > lista[x + 1][1][2][1] and x + 1 != len(lista):
-      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+  n = 0
+  while n < len(lista) * len(lista):
+    for x in range(len(lista) - 1):
+      if lista[x][1][2] > lista[x + 1][1][2] and x + 1 != len(lista):
+        lista[x], lista[x + 1] = lista[x + 1], lista[x]
+      n += 1
+  lista = verificaPrioridadeEmBranco(lista)
   return lista
+
+def verificaPrioridadeEmBranco(lista):
+  n = 0
+  while n < len(lista) * len(lista):
+    for x in range(len(lista) - 1):
+      if lista[x][1][2] == '':
+        lista.insert(len(lista), lista[x])
+        lista.remove(lista[x])
+    n += 1
+  return lista
+
 
 def fazer(num):
 
