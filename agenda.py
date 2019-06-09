@@ -298,20 +298,50 @@ def fazer(num):
 
   return 
 
-def remover():
-
-  ################ COMPLETAR
-
-  return
+def remover(y):
+  j = 0
+  remover = ''
+  with open(TODO_FILE, "r+") as f:
+    abrir = f.readlines()
+    f.seek(0)
+    for x in abrir:
+      if j == int(y):
+        remover = x.strip("\n")
+      j += 1
+    for x in abrir:
+      if x.strip("\n") != remover:
+        f.write(x)
+    f.truncate()
+      
+    
 
 # prioridade é uma letra entre A a Z, onde A é a mais alta e Z a mais baixa.
 # num é o número da atividade cuja prioridade se planeja modificar, conforme
 # exibido pelo comando 'l'. 
 def priorizar(num, prioridade):
-
-  ################ COMPLETAR
-
-  return 
+  j = 0
+  remover = ''
+  with open(TODO_FILE, "r+") as f:
+    abrir = f.readlines()
+    f.seek(0)
+    for x in abrir:
+      if j == int(num):
+        alterar = x.strip("\n")
+      j += 1
+    for x in abrir:
+      if x.strip("\n") != alterar:
+        f.write(x)
+      elif x.strip("\n") == alterar:
+        tokens = x.strip("\n").split()
+        print(tokens)
+        for l in range(len(tokens)):
+          if prioridadeValida(tokens[l]):
+            tokens[l] = "(" + prioridade + ")"
+            print(tokens)
+        tokens = ''.join(tokens)
+        f.write(tokens)
+          
+    f.truncate()
 
 
 
@@ -329,25 +359,19 @@ def processarComandos(comandos) :
     itemParaAdicionar = organizar([' '.join(comandos)])[0]
     # itemParaAdicionar = (descricao, (prioridade, data, hora, contexto, projeto))
     adicionar(itemParaAdicionar[0], itemParaAdicionar[1]) # novos itens não têm prioridade
+    
   elif comandos[1] == LISTAR:
-    listar()    
-    ################ COMPLETAR
-
+    listar()
+    
   elif comandos[1] == REMOVER:
-    return    
-
-    ################ COMPLETAR    
-
+    remover(comandos[2])
+    
   elif comandos[1] == FAZER:
-    return    
-
-    ################ COMPLETAR
-
+    fazer(comandos[2])
+    
   elif comandos[1] == PRIORIZAR:
-    return    
-
-    ################ COMPLETAR
-
+    priorizar(comandos[2], comandos[3])
+    
   else :
     print("Comando inválido.")
 
