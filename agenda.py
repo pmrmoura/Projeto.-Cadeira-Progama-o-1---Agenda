@@ -293,25 +293,46 @@ def verificaPrioridadeEmBranco(lista):
 
 
 def fazer(num):
-
-  ################ COMPLETAR
-
-  return 
+  if contaLinhas() < int(num):
+    print("Essa atividade não existe")
+  else:
+    j = 0
+    with open(TODO_FILE, "r+") as f:
+      abrir = f.readlines()
+      for x in abrir:
+        if j == int(num):
+          feita = x.strip("\n")
+          with open(ARCHIVE_FILE, "w") as t:
+            t.write(feita)
+        j += 1
+    remover(num)
 
 def remover(y):
   j = 0
   remover = ''
+  if contaLinhas() < int(y):
+    print("Essa atividade não existe")
+  else:
+    with open(TODO_FILE, "r+") as f:
+      abrir = f.readlines()
+      f.seek(0)
+      for x in abrir:
+        if j == int(y):
+          remover = x.strip("\n")
+        j += 1
+      for x in abrir:
+        if x.strip("\n") != remover:
+          f.write(x)
+      f.truncate()
+
+def contaLinhas():
+  contador = 0
   with open(TODO_FILE, "r+") as f:
     abrir = f.readlines()
-    f.seek(0)
     for x in abrir:
-      if j == int(y):
-        remover = x.strip("\n")
-      j += 1
-    for x in abrir:
-      if x.strip("\n") != remover:
-        f.write(x)
-    f.truncate()
+      contador += 1
+  return contador
+  
       
     
 
@@ -321,27 +342,43 @@ def remover(y):
 def priorizar(num, prioridade):
   j = 0
   remover = ''
-  with open(TODO_FILE, "r+") as f:
-    abrir = f.readlines()
-    f.seek(0)
-    for x in abrir:
-      if j == int(num):
-        alterar = x.strip("\n")
-      j += 1
-    for x in abrir:
-      if x.strip("\n") != alterar:
-        f.write(x)
-      elif x.strip("\n") == alterar:
-        tokens = x.strip("\n").split()
-        print(tokens)
-        for l in range(len(tokens)):
-          if prioridadeValida(tokens[l]):
-            tokens[l] = "(" + prioridade + ")"
-            print(tokens)
-        tokens = ''.join(tokens)
-        f.write(tokens)
-          
-    f.truncate()
+  if contaLinhas() < int(num):
+    print("Essa atividade não existe")
+  else:  
+    with open(TODO_FILE, "r+") as f:
+      abrir = f.readlines()
+      f.seek(0)
+      for x in abrir:
+        if j == int(num):
+          alterar = x.strip("\n")
+        j += 1
+      for x in abrir:
+        if x.strip("\n") != alterar:
+          f.write(x)
+        elif x.strip("\n") == alterar:
+          tokens = x.strip("\n").split()
+          for l in range(len(tokens)):
+            if prioridadeValida(tokens[l]):
+              tokens[l] = "(" + prioridade + ") " 
+              print(tokens)
+              break
+            elif dataValida(tokens[0]) and horaValida(tokens[1]):
+              tokens[2] = " (" + prioridade + ") "
+              break
+            elif dataValida(tokens[0]):
+              tokens[1] = " (" + prioridade + ") "
+              print(tokens)
+              break
+            elif horaValida(tokens[0]):
+              tokens[1] = " (" + prioridade + ") "
+              break
+            elif not dataValida(tokens[0]) and not horaValida(tokens[1]):
+              tokens.insert(0, "(" + prioridade + ") ")
+              break
+          tokens = ' '.join(tokens)
+          f.write(tokens + "\n")
+            
+      f.truncate()
 
 
 
