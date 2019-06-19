@@ -309,6 +309,12 @@ def ordenarPorDataHora(lista):
           elif mes1  == mes2:
             if dia1 > dia2:
               lista[x], lista[x + 1] = lista[x + 1], lista[x]
+       elif horaValida(horario) and horaValida(horario2):
+    	  if hora1 > hora2:
+	        lista[x], lista[x + 1] = lista[x + 1], lista[x]
+	      elif hora1 == hora2:
+	        if minuto > minuto2:
+	          lista[x], lista[x + 1] = lista[x + 1], lista[x]
   return lista
 
 def colocaDataEHoraNoTopo(lista):
