@@ -237,6 +237,8 @@ def listar():
   fp.close()
   lista = organizar(lista)
   lista = ordenarPorPrioridade(lista)
+  lista = colocaAtividadesComDataNoTopo(lista)
+  lista = ordenarPorDataHora(lista)
   for x in range(len(lista)):
     data = lista[x][1][0]
     hora = lista[x][1][1]
@@ -253,24 +255,87 @@ def listar():
     
 
 def ordenarPorDataHora(lista):
-  for x in range(len(lista) - 1):
-    data = lista[x][1][0]
-    data2 = lista[x + 1][1][0]
-    mes = int(data[2] + data[3])
-    ano = int(data[4] + data[5] + data[6] + data[7])
-    dia = int(data[0] + data[1])
-    mes2 = int(data2[2] + data2[3])
-    ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
-    dia2 = int(data2[0] + data2[1])
-    if ano > ano2 or ano2 > ano:
-      lista[x], lista[x + 1] = lista[x + 1], lista[x]
-    elif mes > mes2 or mes2 > mes:
-      lista[x], lista[x + 1] = lista[x + 1], lista[x]
-    elif dia > dia2 or dia2 > dia:
-      lista[x], lista[x + 1] = lista[x + 1], lista[x]
+  n = 0
+  while n < len(lista) * len(lista):
+    for x in range(len(lista) - 2):
+      data = ''
+      data2 = ''
+      horario = ''
+      horario2 = ''
+      n += 1
+      if dataValida(lista[x][1][0]):
+          data = lista[x][1][0]
+          #Pego cada elemento da data1 separados
+          ano1 = int(data[4] + data[5] + data[6] + data[7])
+          mes1 = int(data[2] + data[3])
+          dia1 = int(data[0] + data[1])
+      if dataValida(lista[x + 1][1][0]):
+          data2 = lista[x + 1][1][0]
+        #Pego cada elemento da data2 separados
+          ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
+          mes2 = int(data2[2] + data2[3])
+          dia2 = int(data2[0] + data2[1])
+      if horaValida(lista[x][1][1]):
+        horario = lista[x][1][1]
+        #pego cada elemento da hora1 separados
+        hora1 = int(horario[0] + horario[1])
+        minuto = int(horario[2] + horario[3])
+      if horaValida(lista[x + 1][1][1]):
+        horario2 = lista[x + 1][1][1]
+        #pego cada elemento da hora2 separados
+        hora2 = int(horario2[0] + horario2[1])
+        minuto2 = int(horario2[2] + horario2[3])
       
+      if dataValida(data) and dataValida(data2) and horaValida(horario) and horaValida(horario2):
+        if ano1 > ano2:
+          lista[x], lista[x + 1] = lista[x + 1], lista[x]
+          break
+        elif ano1 == ano2:
+          if mes1 > mes2:
+            lista[x], lista[x + 1] = lista[x + 1], lista[x]
+          elif mes1 == mes2:
+            if dia1 > dia2:
+              lista[x], lista[x + 1] = lista[x + 1], lista[x]
+            elif dia1 == dia2:
+              lista[x], lista[x + 1] = lista[x + 1], lista[x]
+              if hora1 > hora2:
+                lista[x], lista[x + 1] = lista[x + 1], lista[x]
+              elif hora1 == hora2:
+                if minuto > minuto2:
+                  lista[x], lista[x + 1] = lista[x + 1], lista[x]       
+      elif dataValida(data) and dataValida(data2):
+            if ano1 > ano2:
+              lista[x], lista[x + 1] = lista[x + 1], lista[x]
+            elif ano1 == ano2:
+              if mes1 > mes2:
+                lista[x], lista[x + 1] = lista[x + 1], lista[x]
+              elif mes1 == mes2:
+                if dia1 > dia2:
+                  lista[x], lista[x + 1] = lista[x + 1], lista[x]  
+      elif (horaValida(horario) and not dataValida(data)) and dataValida(data2):
+        lista[x], lista[x + 1] = lista[x + 1], lista[x]
+        break
+      elif horaValida(horario) and horaValida(horario2):
+        if hora1 > hora2:
+          lista[x], lista[x + 1] = lista[x + 1], lista[x]
+          if hora1 == hora2:
+            if minuto > minuto2:
+              lista[x], lista[x + 1] = lista[x + 1], lista[x]
+      
+        
+
   return lista
-   
+
+def colocaAtividadesComDataNoTopo(lista):
+  for x in range(len(lista)):
+    data = lista[x][1][0]
+    hora = lista[x][1][1]
+    if dataValida(data) or horaValida(hora):
+      listaTopo = lista[x]
+      lista.remove(lista[x])
+      lista.insert(0, listaTopo)
+  return lista
+
 def ordenarPorPrioridade(lista):
   n = 0
   while n < len(lista) * len(lista):
@@ -340,6 +405,7 @@ def contaLinhas():
 # num é o número da atividade cuja prioridade se planeja modificar, conforme
 # exibido pelo comando 'l'. 
 def priorizar(num, prioridade):
+  prioridade = prioridade.upper()
   j = 0
   remover = ''
   if contaLinhas() < int(num):
