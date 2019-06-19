@@ -237,7 +237,7 @@ def listar():
   fp.close()
   lista = organizar(lista)
   lista = ordenarPorPrioridade(lista)
-  lista = colocaAtividadesComDataNoTopo(lista)
+  lista = colocaDataEHoraNoTopo(lista)
   lista = ordenarPorDataHora(lista)
   for x in range(len(lista)):
     data = lista[x][1][0]
@@ -255,86 +255,69 @@ def listar():
     
 
 def ordenarPorDataHora(lista):
-  n = 0
-  while n < len(lista) * len(lista):
-    for x in range(len(lista) - 2):
-      data = ''
+  for y in range(len(lista) * len(lista)):
+    for x in range(len(lista) - 1):
+      data1 = ''
       data2 = ''
-      horario = ''
-      horario2 = ''
-      n += 1
+      horario1  = ''
+      horario2 =  ''
       if dataValida(lista[x][1][0]):
-          data = lista[x][1][0]
-          #Pego cada elemento da data1 separados
-          ano1 = int(data[4] + data[5] + data[6] + data[7])
-          mes1 = int(data[2] + data[3])
-          dia1 = int(data[0] + data[1])
+        data1 = lista[x][1][0]
+        mes1 = int(data1[2] + data1[3])
+        ano1 = int(data1[4] + data1[5] + data1[6] + data1[7])
+        dia1 = int(data1[0] + data1[1])
       if dataValida(lista[x + 1][1][0]):
-          data2 = lista[x + 1][1][0]
-        #Pego cada elemento da data2 separados
-          ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
-          mes2 = int(data2[2] + data2[3])
-          dia2 = int(data2[0] + data2[1])
+        data2 = lista[x + 1][1][0]
+        mes2 = int(data2[2] + data2[3])
+        ano2 = int(data2[4] + data2[5] + data2[6] + data2[7])
+        dia2 = int(data2[0] + data2[1])
       if horaValida(lista[x][1][1]):
-        horario = lista[x][1][1]
-        #pego cada elemento da hora1 separados
-        hora1 = int(horario[0] + horario[1])
-        minuto = int(horario[2] + horario[3])
+        horario1 = lista[x][1][1]
+        hora1 = int(horario1[0] + horario1[1])
+        minuto1 =  int(horario1[2] + horario1[3])
       if horaValida(lista[x + 1][1][1]):
         horario2 = lista[x + 1][1][1]
-        #pego cada elemento da hora2 separados
         hora2 = int(horario2[0] + horario2[1])
-        minuto2 = int(horario2[2] + horario2[3])
-      
-      if dataValida(data) and dataValida(data2) and horaValida(horario) and horaValida(horario2):
+        minuto2 =  int(horario2[2] + horario2[3])
+
+      if dataValida(data1) and dataValida(data2) and horaValida(horario1) and horaValida(horario2):
         if ano1 > ano2:
           lista[x], lista[x + 1] = lista[x + 1], lista[x]
           break
         elif ano1 == ano2:
           if mes1 > mes2:
             lista[x], lista[x + 1] = lista[x + 1], lista[x]
-          elif mes1 == mes2:
+          elif mes1  == mes2:
             if dia1 > dia2:
               lista[x], lista[x + 1] = lista[x + 1], lista[x]
             elif dia1 == dia2:
-              lista[x], lista[x + 1] = lista[x + 1], lista[x]
               if hora1 > hora2:
                 lista[x], lista[x + 1] = lista[x + 1], lista[x]
               elif hora1 == hora2:
-                if minuto > minuto2:
-                  lista[x], lista[x + 1] = lista[x + 1], lista[x]       
-      elif dataValida(data) and dataValida(data2):
-            if ano1 > ano2:
-              lista[x], lista[x + 1] = lista[x + 1], lista[x]
-            elif ano1 == ano2:
-              if mes1 > mes2:
-                lista[x], lista[x + 1] = lista[x + 1], lista[x]
-              elif mes1 == mes2:
-                if dia1 > dia2:
-                  lista[x], lista[x + 1] = lista[x + 1], lista[x]  
-      elif (horaValida(horario) and not dataValida(data)) and dataValida(data2):
+                if minuto1 > minuto2:
+                  lista[x], lista[x + 1] = lista[x + 1], lista[x]
+      elif (horaValida(horario1) and not dataValida(data1)) and dataValida(data2):
         lista[x], lista[x + 1] = lista[x + 1], lista[x]
         break
-      elif horaValida(horario) and horaValida(horario2):
-        if hora1 > hora2:
+      elif dataValida(data1) and dataValida(data2):
+        if ano1 > ano2:
           lista[x], lista[x + 1] = lista[x + 1], lista[x]
-          if hora1 == hora2:
-            if minuto > minuto2:
+          break
+        elif ano1 == ano2:
+          if mes1 > mes2:
+            lista[x], lista[x + 1] = lista[x + 1], lista[x]
+          elif mes1  == mes2:
+            if dia1 > dia2:
               lista[x], lista[x + 1] = lista[x + 1], lista[x]
-      
-        
-
   return lista
 
-def colocaAtividadesComDataNoTopo(lista):
+def colocaDataEHoraNoTopo(lista):
   for x in range(len(lista)):
-    data = lista[x][1][0]
-    hora = lista[x][1][1]
-    if dataValida(data) or horaValida(hora):
+    if dataValida(lista[x][1][0]) or horaValida(lista[x][1][1]):
       listaTopo = lista[x]
       lista.remove(lista[x])
       lista.insert(0, listaTopo)
-  return lista
+  return  lista
 
 def ordenarPorPrioridade(lista):
   n = 0
@@ -405,7 +388,7 @@ def contaLinhas():
 # num é o número da atividade cuja prioridade se planeja modificar, conforme
 # exibido pelo comando 'l'. 
 def priorizar(num, prioridade):
-  prioridade = prioridade.upper()
+  prioridade  =  prioridade.upper()
   j = 0
   remover = ''
   if contaLinhas() < int(num):
