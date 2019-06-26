@@ -309,9 +309,9 @@ def ordenarPorDataHora(lista):
             if dia1 > dia2:
               lista[x], lista[x + 1] = lista[x + 1], lista[x]
       elif horaValida(horario1) and horaValida(horario2):
-    	  if hora1 > hora2:
+        if hora1 > hora2:
               lista[x], lista[x + 1] = lista[x + 1], lista[x]
-      if hora1 == hora2:
+        elif hora1 == hora2:
               if minuto1 > minuto2:
                 lista[x], lista[x + 1] = lista[x + 1], lista[x]
             
